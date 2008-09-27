@@ -4,7 +4,7 @@
 === So far this is what we have been able to gather as far as specs are concerned ===
 
 
-* taken from _ AiboPets _ post on the official nia forum: *
+* taken from _ AiboPet _ post on the official nia forum: *
 
 What I know so far. The NIA continuously returns data.... I noticed that it produces 55 byte of data 512 time in a second.
 That should be 56 bytes per record (but the last byte will always be zero) -- at least using the Windows HID drivers.
