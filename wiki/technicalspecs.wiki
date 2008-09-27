@@ -4,7 +4,7 @@
 === So far this is what we have been able to gather as far as specs are concerned ===
 
 
-*taken from _AiboPets_ post on the official nia forum:*
+* taken from _ AiboPets _ post on the official nia forum: *
 
 What I know so far. The NIA continuously returns data.... I noticed that it produces 55 byte of data 512 time in a second.
 That should be 56 bytes per record (but the last byte will always be zero) -- at least using the Windows HID drivers.
@@ -28,7 +28,7 @@ Depending on the method of raw capture, you may get an extra 0 at the start.
 
 The 3 byte (24 bit) sample data appears to be biased by 8000000 (decimal). I don't know how they encode it exactly, including Left vs. Right. I need to find a less RF noisy place to test. BTW: The NIA box has a 24 bit per channel stereo A-to-D converter.
 
-*and another post from _D3adg0d_ on the same forum*
+*and another post from _ D3adg0d _ on the same forum*
 
 Secondly I noticed that the nia is a smiple HID device, or Human Interface Device. Just like a mouse or keyboard, or the WiiMote if you connect it through bluetooth, or an even better example would be a USB joystick. What that boils down to is that anyone that knows how to program can pull reports from the nia and as long as they know how to decode the report packet they can use it in their program however they want.
 
@@ -68,5 +68,5 @@ I haven't really tried to decode the first 24 bytes into fields yet but I might 
 
 ----
 
-Also here are some files from the NeuroUpdate.com website that have done some tests and generated various excel charts with captured data:
+Also here are some files from the NeuroUpdate website that have done some tests and generated various excel charts with captured data:
  * http://www.neuroupdate.com/nia/
