@@ -10,19 +10,19 @@ What I know so far. The NIA continuously returns data.... I noticed that it prod
 That should be 56 bytes per record (but the last byte will always be zero) -- at least using the Windows HID drivers.
 
 From Windows based HID sample app (see DDK HClient and TestVHID)
-The "HID_CAPS" attributes:
-Input report byte length: 56
-Output report byte length: 9
-Feature report byte length: 2
+ * The "HID_CAPS" attributes:
+ * Input report byte length: 56
+ * Output report byte length: 9
+ * Feature report byte length: 2
 
 The format of the 56 bytes appears to be as follows (with my experimental numbers):
 
-Array of 16 sample values, 3 bytes each (usage 0xA). The number of valid samples varies (typically 3 to 9). Unused samples are 0x7A1200 (8000000 decimal)
-2 byte value (usage 0xC) - appears to be 0xBD38 most/all of the time
-2 byte value (usage 0x1) - appears to fluctuate between 0xFFFC to 0xFFFE
-2 byte value (usage 0xB) - timestamp, in samples, useful to see if record capture is
+ * Array of 16 sample values, 3 bytes each (usage 0xA). The number of valid samples varies (typically 3 to 9). Unused samples are 0x7A1200 (8000000 decimal)
+ * 2 byte value (usage 0xC) - appears to be 0xBD38 most/all of the time
+ * 2 byte value (usage 0x1) - appears to fluctuate between 0xFFFC to 0xFFFE
+ * 2 byte value (usage 0xB) - timestamp, in samples, useful to see if record capture is
 getting behind
-2 byte value (usage 0x9) - number of valid samples in this record (0x0003 to 0x0009)
+ * 2 byte value (usage 0x9) - number of valid samples in this record (0x0003 to 0x0009)
 
 Depending on the method of raw capture, you may get an extra 0 at the start.
 
@@ -38,14 +38,14 @@ You can send it a output report, receive an input report, or set a feature.
 All you have to do to get the values of that report is request it, its part of the HID standard.
 
 So the nia is this:
-VID: 1234
-PID: 0000
-REV: 0001
-Report size (including report id)
-Input: 56 bytes
-Output: 9 bytes
-Feature: 2 bytes
-24-bit biometric sample data array (min-8388608, max:8388607)
+ * VID: 1234
+ * PID: 0000
+ * REV: 0001
+ * Report size (including report id)
+ * Input: 56 bytes
+ * Output: 9 bytes
+ * Feature: 2 bytes
+ * 24-bit biometric sample data array (min-8388608, max:8388607)
 
 So as you can see you can send it a report request of 9 bytes or feature request of 2. Likewise your report will be 56 bytes. I fired up my handy dandy USB HID IO program and viewed the IO of the nia.
 
