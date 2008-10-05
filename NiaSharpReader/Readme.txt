@@ -1,7 +1,20 @@
-A little test app made using the generic hid library from http://www.lvr.com/hidpage.htm
-which has been seperated into a standalone dll
+-----------
+GenericHid:
+-----------
+A standalone verision of the generic hid library availaible from
+http://www.lvr.com/hidpage.htm
 
-a charting library from http://zedgraph.org
+
+---------
+ZedGraph:
+---------
+A charting library from
+http://zedgraph.org
+
+
+---------------
+NiaSharpReader:
+---------------
 
 The form code itself has been reduced to it's strict minimum as far as interactions
 with the generic hidlibrary goes, and the way the data is interpreted and charted comes
@@ -19,13 +32,12 @@ If you want to mess with the source-code and don't have Visual Studio 2008, you 
 the free "Visual C# 2008 Express Edition" here: http://www.microsoft.com/express/download/
 
 
-
-..proper readme maybe when i'm not tossing code on google at midnight :-)
-
-
-Credits to:
+-------------------
+Special Credits to:
+-------------------
 AiboPet
 Neuroupdate
 D3adg0d
 and of course the makers of the above libraries.
-All without whom none of this code would have advaced a bit
+
+All, without whom none of this would have been possible.
