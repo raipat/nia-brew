@@ -5,6 +5,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiaSharpReader", "NiaSharpR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericHid", "GenericHid\GenericHid.csproj", "{0B98058B-3DFA-49DC-8C84-3261C4C0D2FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1B4AFACA-7A06-4CEA-A04B-D2E2C8C01BDC}"
+	ProjectSection(SolutionItems) = preProject
+		ZedGraph\ZedGraph.dll = ZedGraph\ZedGraph.dll
+		ZedGraph\ZedGraph.txt = ZedGraph\ZedGraph.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
