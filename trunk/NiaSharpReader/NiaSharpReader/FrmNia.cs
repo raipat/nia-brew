@@ -255,7 +255,6 @@ namespace NiaReader
 
         #region Interpret Data
 		private static long timerValue = 0;
-        private static System.Collections.Generic.List<byte> writeData = new System.Collections.Generic.List<byte>();
         private void Interpret(Byte[] data)
         {
 			// interpretation taken from niawiimote hack						
@@ -267,10 +266,6 @@ namespace NiaReader
 				long timerPosition = (packetTimer + index);
                 long rawData = data[index * 3 + 1] * 1 + data[index * 3 + 2] * 256 + data[index * 3 + 3] * 65535;
 
-                writeData.Add(data[index * 3 + 3]);
-                writeData.Add(data[index * 3 + 2]);
-                writeData.Add(data[index * 3 + 1]);
-
 				if (timerValue > timerPosition)
 				{
                     DataListBox.Items.Add("Timer Reset");
@@ -279,21 +274,7 @@ namespace NiaReader
 				timerValue = timerPosition;
 
                 // Max value detected 16776960(0xFFFF00)/2 = 8388480(0x7FFF80)
-                rawData = (rawData - 8388480);
-
-                
-                if (writeData.Count > 10000)
-                {
-                    System.IO.StreamWriter sw = new System.IO.StreamWriter("raw.data");
-                    System.Collections.Generic.List<byte>.Enumerator en = writeData.GetEnumerator();
-                    while (en.MoveNext())
-                    {
-                        sw.Write(Convert.ToChar(en.Current));
-                    }
-                    sw.Close();
-                    timer.Enabled = false;
-                    return;
-                }
+                rawData = (rawData - 8388480);             
 
 				string output = string.Concat("Timer: ", timerPosition, "\tData: ", rawData);
                 DataListBox.Items.Add(output);
