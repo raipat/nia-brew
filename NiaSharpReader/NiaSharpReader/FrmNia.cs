@@ -254,18 +254,19 @@ namespace NiaReader
         #endregion
 
         #region Interpret Data
-		private static long timerValue = 0;
+        // interpretation taken from niawiimote hack
+        private static long timerValue = 0;
         private void Interpret(Byte[] data)
-        {
-			// interpretation taken from niawiimote hack						
-			long validPackets = data[55];
-			long packetTimer  = data[54] * 256 + data[53] - validPackets;
-		
+        {						
+            // Max value detected 65535(0xFFFF)
+            long packetTimer  = (data[53] + (data[54] * 256));
+            long validPackets = data[55];
 			for (long index = 0; index <= (validPackets - 1); index++)
 			{
-				long timerPosition = (packetTimer + index);
-                long rawData = data[index * 3 + 1] * 1 + data[index * 3 + 2] * 256 + data[index * 3 + 3] * 65535;
+                long timerPosition = (packetTimer + index);
+                double rawData = data[index * 3 + 1] + (data[index * 3 + 2] * 256) + (data[index * 3 + 3] * 65536);
 
+                //reset zedgraph
 				if (timerValue > timerPosition)
 				{
                     DataListBox.Items.Add("Timer Reset");
@@ -273,10 +274,10 @@ namespace NiaReader
 				}
 				timerValue = timerPosition;
 
-                // Max value detected 16776960(0xFFFF00)/2 = 8388480(0x7FFF80)
-                rawData = (rawData - 8388480);             
+                // Max value detected 16777215(0xFFFFFF)/2 = 8388607,5(0x7FFFFF)
+                rawData = (rawData - 8388607.5);
 
-				string output = string.Concat("Timer: ", timerPosition, "\tData: ", rawData);
+                string output = string.Concat("Timer: ", timerPosition, "\tData: ", rawData);
                 DataListBox.Items.Add(output);
                 UpdateZedGraph(timerPosition, rawData);
 			}
@@ -286,30 +287,37 @@ namespace NiaReader
         #region ZedGraph
         private void ZedInit()
         {
-            GraphPane myPane = zedGraphControl.GraphPane;
-
-            myPane.Title.Text       = "Dynamic NIA Data";
-            myPane.XAxis.Title.Text = "TimeLine";
-            myPane.YAxis.Title.Text = "Sample Value";
+            GraphPane combinedPane = zedGraphControl.GraphPane;
+            combinedPane.Title.Text       = "Dynamic NIA Data";
+            combinedPane.XAxis.Title.Text = "TimeLine";
+            combinedPane.YAxis.Title.Text = "Sample Value";
 
             // 1200:50ms, 2400:25ms, 4800:12.5ms, 9600:6.25ms, 19200:3.125ms, 38400:1.5625ms
             // Save 1200 points.  At 50 ms sample rate, this is one minute
             // The RollingPointPairList is an efficient storage class that always
             // keeps a rolling set of point data without needing to shift any data values
-            RollingPointPairList list1 = new RollingPointPairList(9600);
+            RollingPointPairList combinedList = new RollingPointPairList(9600);
+            RollingPointPairList leftList     = new RollingPointPairList(9600);
+            RollingPointPairList rightList    = new RollingPointPairList(9600);
 
             // Initially, a curve is added with no data points (list is empty)
             // Color is blue, and there will be no symbols
-            LineItem curve1 = myPane.AddCurve("NIA Input", list1, Color.Red, SymbolType.None);
-            curve1.Line.IsOptimizedDraw = true;
+            LineItem combinedCurve = combinedPane.AddCurve("Combined Input", combinedList, Color.Red, SymbolType.None);
+            combinedCurve.Line.IsOptimizedDraw = true;
+
+            LineItem leftCurve = combinedPane.AddCurve("Left Input", leftList, Color.Blue, SymbolType.None);
+            combinedCurve.Line.IsOptimizedDraw = true;
+
+            LineItem rightCurve = combinedPane.AddCurve("Right Input", rightList, Color.Yellow, SymbolType.None);
+            combinedCurve.Line.IsOptimizedDraw = true;
 
             // Scale XAxis : Time
-            myPane.XAxis.Scale.Min = 0;
-            myPane.XAxis.Scale.Max = 65535; //65528 (0xFFF8): max value detected for timer packet
+            combinedPane.XAxis.Scale.Min = 0;
+            combinedPane.XAxis.Scale.Max = 65535; //65535(0xFFFF): max possible value for timer packet
             
             // Scale YAxis: Value
-			myPane.YAxis.Scale.Min = -10000000;
-            myPane.YAxis.Scale.Max = 10000000; //16776960 (0xFFFF00): max value detected for data packet;
+            combinedPane.YAxis.Scale.Min = -10000000;
+            combinedPane.YAxis.Scale.Max = 10000000; //16776960 (0x7FFFFF): max possible value for data packet;
 
             // Scale the axes
             zedGraphControl.AxisChange();
@@ -323,28 +331,28 @@ namespace NiaReader
                 return;
 
             // Get the first CurveItem in the graph
-            LineItem curve1 = zedGraphControl.GraphPane.CurveList[0] as LineItem;
-            if (curve1 == null)
+            LineItem combinedCurve = zedGraphControl.GraphPane.CurveList["Combined Input"] as LineItem;
+            if (combinedCurve == null)
                 return;
-            curve1.Line.IsOptimizedDraw = true;
+            combinedCurve.Line.IsOptimizedDraw = true;
 
             // Get the PointPairList
-            IPointListEdit list1 = curve1.Points as IPointListEdit;
+            IPointListEdit combinedList = combinedCurve.Points as IPointListEdit;
             // If this is null, it means the reference at curve.Points does not
             // support IPointListEdit, so we won't be able to modify it
-            if (list1 == null)
+            if (combinedList == null)
                 return;
 
 			// remove the backtrail
 			if (time == 0)
 			{
-				list1.Clear();
+                combinedList.Clear();
 				zedGraphControl.Invalidate();
 				return;
 			}
             
             // Add points to the chart
-            list1.Add(time, value);
+            combinedList.Add(time, value);
 
             // Force a redraw
             zedGraphControl.Invalidate();
