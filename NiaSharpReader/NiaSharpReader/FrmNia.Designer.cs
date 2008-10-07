@@ -37,11 +37,14 @@
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.SampleLabel = new System.Windows.Forms.Label();
             this.SampleRateLabel = new System.Windows.Forms.Label();
+            this.PlaybackButton = new System.Windows.Forms.Button();
+            this.RecordingCheckBox = new System.Windows.Forms.CheckBox();
+            this.LoadButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // zedGraphControl
             // 
-            this.zedGraphControl.Location = new System.Drawing.Point(2, 4);
+            this.zedGraphControl.Location = new System.Drawing.Point(2, 29);
             this.zedGraphControl.Name = "zedGraphControl";
             this.zedGraphControl.ScrollGrace = 0;
             this.zedGraphControl.ScrollMaxX = 0;
@@ -50,7 +53,7 @@
             this.zedGraphControl.ScrollMinX = 0;
             this.zedGraphControl.ScrollMinY = 0;
             this.zedGraphControl.ScrollMinY2 = 0;
-            this.zedGraphControl.Size = new System.Drawing.Size(630, 332);
+            this.zedGraphControl.Size = new System.Drawing.Size(630, 307);
             this.zedGraphControl.TabIndex = 0;
             // 
             // DataListBox
@@ -63,21 +66,21 @@
             // 
             // StopButton
             // 
-            this.StopButton.Location = new System.Drawing.Point(739, 4);
+            this.StopButton.Location = new System.Drawing.Point(68, 4);
             this.StopButton.Name = "StopButton";
-            this.StopButton.Size = new System.Drawing.Size(98, 23);
+            this.StopButton.Size = new System.Drawing.Size(52, 23);
             this.StopButton.TabIndex = 7;
-            this.StopButton.Text = "Stop Reading";
+            this.StopButton.Text = "Stop";
             this.StopButton.UseVisualStyleBackColor = true;
             this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
             // ReadSyncButton
             // 
-            this.ReadSyncButton.Location = new System.Drawing.Point(638, 4);
+            this.ReadSyncButton.Location = new System.Drawing.Point(12, 4);
             this.ReadSyncButton.Name = "ReadSyncButton";
-            this.ReadSyncButton.Size = new System.Drawing.Size(94, 23);
+            this.ReadSyncButton.Size = new System.Drawing.Size(50, 23);
             this.ReadSyncButton.TabIndex = 11;
-            this.ReadSyncButton.Text = "Start Reading";
+            this.ReadSyncButton.Text = "Read";
             this.ReadSyncButton.UseVisualStyleBackColor = true;
             this.ReadSyncButton.Click += new System.EventHandler(this.ReadSyncButton_Click);
             // 
@@ -103,11 +106,44 @@
             this.SampleRateLabel.TabIndex = 13;
             this.SampleRateLabel.Text = "1 ms";
             // 
+            // PlaybackButton
+            // 
+            this.PlaybackButton.Location = new System.Drawing.Point(359, 4);
+            this.PlaybackButton.Name = "PlaybackButton";
+            this.PlaybackButton.Size = new System.Drawing.Size(64, 23);
+            this.PlaybackButton.TabIndex = 14;
+            this.PlaybackButton.Text = "Playback";
+            this.PlaybackButton.UseVisualStyleBackColor = true;
+            this.PlaybackButton.Click += new System.EventHandler(this.PlaybackButton_Click);
+            // 
+            // RecordingCheckBox
+            // 
+            this.RecordingCheckBox.AutoSize = true;
+            this.RecordingCheckBox.Location = new System.Drawing.Point(126, 8);
+            this.RecordingCheckBox.Name = "RecordingCheckBox";
+            this.RecordingCheckBox.Size = new System.Drawing.Size(61, 17);
+            this.RecordingCheckBox.TabIndex = 15;
+            this.RecordingCheckBox.Text = "Record";
+            this.RecordingCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // LoadButton
+            // 
+            this.LoadButton.Location = new System.Drawing.Point(289, 4);
+            this.LoadButton.Name = "LoadButton";
+            this.LoadButton.Size = new System.Drawing.Size(64, 23);
+            this.LoadButton.TabIndex = 16;
+            this.LoadButton.Text = "Load";
+            this.LoadButton.UseVisualStyleBackColor = true;
+            this.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
+            // 
             // FrmNia
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(841, 340);
+            this.ClientSize = new System.Drawing.Size(841, 338);
+            this.Controls.Add(this.LoadButton);
+            this.Controls.Add(this.RecordingCheckBox);
+            this.Controls.Add(this.PlaybackButton);
             this.Controls.Add(this.SampleRateLabel);
             this.Controls.Add(this.SampleLabel);
             this.Controls.Add(this.zedGraphControl);
@@ -134,6 +170,9 @@
 		private System.Windows.Forms.Timer timer;
 		private System.Windows.Forms.Label SampleLabel;
         private System.Windows.Forms.Label SampleRateLabel;
+        private System.Windows.Forms.Button PlaybackButton;
+        private System.Windows.Forms.CheckBox RecordingCheckBox;
+        private System.Windows.Forms.Button LoadButton;
 
     }
 }

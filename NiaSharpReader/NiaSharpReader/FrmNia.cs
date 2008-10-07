@@ -9,6 +9,11 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using ZedGraph;
 
+//recording
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+
 namespace NiaReader
 {
     public partial class FrmNia : Form
@@ -40,6 +45,10 @@ namespace NiaReader
         /// If the NIA was detected
         /// </summary>
         private bool NiaDetected = false;
+        /// <summary>
+        /// To store recording data
+        /// </summary>
+        private static System.Collections.Generic.List<byte[]> recording =  new System.Collections.Generic.List<byte[]>();
         #endregion
 
         #region Init/Dispose Actions
@@ -48,13 +57,13 @@ namespace NiaReader
             InitializeComponent();
 			this.Text       += string.Concat(" : v", this.ProductVersion);
             this.Disposed   += new EventHandler(FrmNia_Disposed);
-            this.timer.Tick += new EventHandler(timer_Tick);
 
             if (!FindNia())
                 MessageBox.Show("NIA is not connected.", "Error");
 
             this.timer.Interval = 1;
         }
+
         void FrmNia_Disposed(object sender, EventArgs e)
         {
             DisposeNIA();
@@ -73,20 +82,81 @@ namespace NiaReader
                 }
             }
 			
-            DataListBox.Items.Clear();				
-            timer.Enabled = true;
+            DataListBox.Items.Clear();
+            this.timer.Tick += new EventHandler(timer_Tick);
+            timer.Enabled    = true;
 		}
+        private void PlaybackButton_Click(object sender, EventArgs e)
+        {
+            RecordingCheckBox.Enabled = false;
+            DataListBox.Items.Clear();
+            UpdateZedGraph("Combined", 0, 0);
+
+            this.timer.Tick += new EventHandler(recorder_tick);
+            timer.Enabled    = true;            
+        }
         private void StopButton_Click(object sender, EventArgs e)
         {
-			timer.Enabled = false;
-        }
+            if (RecordingCheckBox.Checked)
+                SaveRecording();
 
+            RecordingCheckBox.Checked = false;
+            RecordingCheckBox.Enabled = true;
+            ReadSyncButton.Enabled    = true;
+
+            this.timer.Tick -= new EventHandler(timer_Tick);
+            this.timer.Tick -= new EventHandler(recorder_tick);
+			timer.Enabled    = false;
+        }
+        private void LoadButton_Click(object sender, EventArgs e)
+        {
+            RecordingCheckBox.Enabled = false;
+            ReadSyncButton.Enabled = false;
+            LoadRecording();
+        }
+        private void LoadRecording()
+        {
+            Stream s = System.IO.File.Open("recording.dat", FileMode.Open);
+            BinaryFormatter b = new BinaryFormatter();
+            recording = (System.Collections.Generic.List<byte[]>)b.Deserialize(s);
+            s.Close();
+        }
+        private void SaveRecording()
+        {
+            if (recording.Count > 0)
+            {
+                Stream s = System.IO.File.Open("recording.dat", FileMode.Create);
+                BinaryFormatter b = new BinaryFormatter();
+                b.Serialize(s, recording);
+                s.Close();
+            }
+        }
         private void timer_Tick(object sender, EventArgs e)
         {
             ReadFromNiaSync();
 
             if (DataListBox.Items.Count >= 0)
                 DataListBox.SelectedIndex = (DataListBox.Items.Count-1);
+
+            if (DataListBox.Items.Count > 200)
+                DataListBox.Items.RemoveAt(0);
+        }
+        static int counter = 0;
+        private void recorder_tick(object sender, EventArgs e)
+        {
+            if (counter < recording.Count)
+            {
+                Interpret(recording[counter]);
+            }
+            else
+            {
+                counter = 0;
+                DataListBox.Items.Clear();
+            }
+            counter++;
+
+            if (DataListBox.Items.Count >= 0)
+                DataListBox.SelectedIndex = (DataListBox.Items.Count - 1);
 
             if (DataListBox.Items.Count > 200)
                 DataListBox.Items.RemoveAt(0);
@@ -240,27 +310,33 @@ namespace NiaReader
 		///  </summary>
 		private void ReadFromNiaSync()
         {
-            Byte[] inputReportBuffer = new Byte[56];
-            Boolean success = false;
+            byte[] inputReportBuffer = new Byte[56];
+            bool success = false;
 
 			GenericHid.Hid.InputReportViaInterruptTransfer myInputReport = new GenericHid.Hid.InputReportViaInterruptTransfer();
             myInputReport.Read(hidHandle, readHandle, writeHandle, ref NiaDetected, ref inputReportBuffer, ref success);
 
 			ShowMS(DateTime.Now.Millisecond);
-			       
-			if (success)
+
+            if (success)
+            {
+                if (RecordingCheckBox.Checked)
+                    recording.Add(inputReportBuffer);
+
                 Interpret(inputReportBuffer);
+            }
         }
         #endregion
 
         #region Interpret Data
         // interpretation taken from niawiimote hack
         private static long timerValue = 0;
-        private void Interpret(Byte[] data)
+        private void Interpret(byte[] data)
         {						
             // Max value detected 65535(0xFFFF)
             long packetTimer  = (data[53] + (data[54] * 256));
             long validPackets = data[55];
+            
 			for (long index = 0; index <= (validPackets - 1); index++)
 			{
                 long timerPosition = (packetTimer + index);
@@ -270,16 +346,16 @@ namespace NiaReader
 				if (timerValue > timerPosition)
 				{
                     DataListBox.Items.Add("Timer Reset");
-                    UpdateZedGraph(0, 0);
+                    UpdateZedGraph("Combined", 0, 0);
 				}
 				timerValue = timerPosition;
 
                 // Max value detected 16777215(0xFFFFFF)/2 = 8388607,5(0x7FFFFF)
                 rawData = (rawData - 8388607.5);
-
                 string output = string.Concat("Timer: ", timerPosition, "\tData: ", rawData);
+                
                 DataListBox.Items.Add(output);
-                UpdateZedGraph(timerPosition, rawData);
+                UpdateZedGraph("Combined", timerPosition, rawData);
 			}
         }
         #endregion
@@ -302,13 +378,13 @@ namespace NiaReader
 
             // Initially, a curve is added with no data points (list is empty)
             // Color is blue, and there will be no symbols
-            LineItem combinedCurve = combinedPane.AddCurve("Combined Input", combinedList, Color.Red, SymbolType.None);
+            LineItem combinedCurve = combinedPane.AddCurve("Combined", combinedList, Color.Red, SymbolType.None);
             combinedCurve.Line.IsOptimizedDraw = true;
 
-            LineItem leftCurve = combinedPane.AddCurve("Left Input", leftList, Color.Blue, SymbolType.None);
+            LineItem leftCurve = combinedPane.AddCurve("Left", leftList, Color.Blue, SymbolType.None);
             combinedCurve.Line.IsOptimizedDraw = true;
 
-            LineItem rightCurve = combinedPane.AddCurve("Right Input", rightList, Color.Yellow, SymbolType.None);
+            LineItem rightCurve = combinedPane.AddCurve("Right", rightList, Color.Brown, SymbolType.None);
             combinedCurve.Line.IsOptimizedDraw = true;
 
             // Scale XAxis : Time
@@ -324,14 +400,14 @@ namespace NiaReader
 
             
         }
-        private void UpdateZedGraph(double time, double value)
+        private void UpdateZedGraph(string curve, double time, double value)
         {
             // Make sure that the curvelist has at least one curve
             if (zedGraphControl.GraphPane.CurveList.Count <= 0)
                 return;
 
             // Get the first CurveItem in the graph
-            LineItem combinedCurve = zedGraphControl.GraphPane.CurveList["Combined Input"] as LineItem;
+            LineItem combinedCurve = zedGraphControl.GraphPane.CurveList[curve] as LineItem;
             if (combinedCurve == null)
                 return;
             combinedCurve.Line.IsOptimizedDraw = true;
