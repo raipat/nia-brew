@@ -15,13 +15,13 @@
  * http://www.analog.com/en/interface/digital-isolators/adum1300/products/product.html
 
 *MC74HC595A* x3 (_8-bit Serial-input/serial or Parallel-output Shift Register With Latched 3-state Outputs_)
- * http://www.digchip.com/datasheets/parts/datasheet/343/MC74HC595A.php
+ * http://www.onsemi.com/PowerSolutions/product.do?id=MC74HC595A
 
 *PIC18F2455* (_programmable micro controller w/usb interface_)
  * http://www.microchip.com/wwwproducts/Devices.aspx?dDocName=en010273
 
 *HCT393* (_High Speed CMOS Logic Dual 4-Stage Binary Counter_)
- * http://focus.ti.com/docs/prod/folders/print/cd74hct393.html#symbols
+ * http://focus.ti.com/docs/prod/folders/print/cd74hct393.html
 
 *HCPL-2631* (_8-Pin DIP Dual-Channel High Speed 10 MBit/s Logic Gate Output Optocoupler_)
  * http://www.fairchildsemi.com/pf/HC/HCPL-2631.html
@@ -32,8 +32,8 @@
 *CWX825* (_16.0Mhz - Crystal oscillator_)
  * http://parts.digikey.com/1/parts/399909-osc-16-0000mhz-5-0v-50ppm-smd-cwx825-16-0m.html
 
-*DCH01* (_Miniature, 1W, 3kV isolated unregulated DC/DC converter_)
- * http://www.alldatasheet.co.kr/datasheet-pdf/pdf_kor/155793/TI/DCH01.html
+*DCH01* (_Miniature, 1W, 3kVDC Isolated DC/DC Converter_)
+ * http://focus.ti.com/docs/prod/folders/print/dch010505d.html
 
 
 
