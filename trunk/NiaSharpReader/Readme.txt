@@ -32,6 +32,10 @@ If you want to mess with the source-code and don't have Visual Studio 2008, you 
 the free "Visual C# 2008 Express Edition" here: http://www.microsoft.com/express/download/
 
 
+If you don't have a NIA or just want to play with some sample data, place "recording.dat"
+in the same folder as the compiled NiaSharpReader.exe
+
+
 -------------------
 Special Credits to:
 -------------------
