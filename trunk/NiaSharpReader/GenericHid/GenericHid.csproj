@@ -66,4 +66,7 @@
     <Compile Include="HidDeclarations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="readme.txt" />
+  </ItemGroup>
 </Project>
