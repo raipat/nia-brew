@@ -35,6 +35,9 @@ the free "Visual C# 2008 Express Edition" here: http://www.microsoft.com/express
 If you don't have a NIA or just want to play with some sample data, place "recording.dat"
 in the same folder as the compiled NiaSharpReader.exe
 
+It is a serialized "System.Collections.Generic.List<byte[]>" containing the raw packets
+in the order they where captured.
+
 
 -------------------
 Special Credits to:
