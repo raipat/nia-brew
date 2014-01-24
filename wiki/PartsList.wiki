@@ -30,7 +30,7 @@
  *????
 
 *CWX825* (_16.0Mhz - Crystal oscillator_)
- * http://parts.digikey.com/1/parts/399909-osc-16-0000mhz-5-0v-50ppm-smd-cwx825-16-0m.html
+ * http://search.digikey.com/scripts/DkSearch/dksus.dll?lang=en&site=us&KeyWords=CW482CT-ND
 
 *DCH01* (_Miniature, 1W, 3kVDC Isolated DC/DC Converter_)
  * http://focus.ti.com/docs/prod/folders/print/dch010505d.html
